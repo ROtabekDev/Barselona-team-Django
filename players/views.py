@@ -1,10 +1,18 @@
-import re
+
 from django.shortcuts import render, redirect
 from django.http import Http404, HttpResponse
 
-def index(request):
-    return HttpResponse("Bu yangi app.")
+from .models import Players
 
+menu = ["Biz haqimizda", "Post qo`shish", "Bog`lanish", "Chiqish"]
+
+def index(request):
+    posts = Players.objects.all()
+    return render(request, 'players/index.html', {'posts': posts,'menu': menu, 'title': 'Asosiy sahifa'})
+
+def about(request):
+    return render(request, 'players/about.html', {'menu': menu, 'title': 'Biz haqimizda'})
+    
 def categories(request, catid): 
     return HttpResponse(f"<h1>Kategoriyalar</h1><p>{catid}</p>")
 
