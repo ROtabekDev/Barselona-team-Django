@@ -1,6 +1,5 @@
-
 from django.db import models
-
+from django.urls import reverse
 class Players(models.Model):
     title = models.CharField(max_length=255)
     content = models.TextField(blank=True)
@@ -11,3 +10,6 @@ class Players(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('post', kwargs={'post_id': self.pk})
