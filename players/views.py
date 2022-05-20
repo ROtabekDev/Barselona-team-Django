@@ -2,7 +2,7 @@
 from django.shortcuts import render, redirect
 from django.http import Http404, HttpResponse
 
-from .models import Players
+from .models import Players, Category
 
 menu = [{'title': 'Biz haqimizda', 'url_name': 'about'},
         {'title': 'Post qo`shish', 'url_name': 'add_page'},
@@ -12,11 +12,16 @@ menu = [{'title': 'Biz haqimizda', 'url_name': 'about'},
 
 def index(request):
     posts = Players.objects.all()
+    cats = Category.objects.all()
+
     context = {
         'posts': posts,
+        'cats': cats,
         'menu': menu,
-        'title': 'Asosiy sahifa'
+        'title': 'Asosiy sahifa',
+        'cat_selected': 0,
     }
+
     return render(request, 'players/index.html', context=context)
 
 def about(request):
@@ -36,4 +41,18 @@ def pageNotFound(request, exception):
 
 def show_post(request, post_id):
     return HttpResponse(f"Id: {post_id}")
+
+def show_category(request, cat_id):
+    posts = Players.objects.filter(cat_id=cat_id)
+    cats = Category.objects.all()
+
+    context = {
+        'posts': posts,
+        'cats': cats,
+        'menu': menu,
+        'title': 'Kategoriya',
+        'cat_selected': cat_id,
+    }
+
+    return render(request, 'players/index.html', context=context) 
 
