@@ -11,12 +11,10 @@ menu = [{'title': 'Biz haqimizda', 'url_name': 'about'},
 ]
 
 def index(request):
-    posts = Players.objects.all()
-    cats = Category.objects.all()
+    posts = Players.objects.all() 
 
     context = {
-        'posts': posts,
-        'cats': cats,
+        'posts': posts, 
         'menu': menu,
         'title': 'Asosiy sahifa',
         'cat_selected': 0,
@@ -43,12 +41,10 @@ def show_post(request, post_id):
     return HttpResponse(f"Id: {post_id}")
 
 def show_category(request, cat_id):
-    posts = Players.objects.filter(cat_id=cat_id)
-    cats = Category.objects.all()
+    posts = Players.objects.filter(cat_id=cat_id) 
 
     context = {
-        'posts': posts,
-        'cats': cats,
+        'posts': posts, 
         'menu': menu,
         'title': 'Kategoriya',
         'cat_selected': cat_id,
