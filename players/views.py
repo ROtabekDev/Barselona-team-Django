@@ -1,6 +1,8 @@
 
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.http import Http404, HttpResponse
+
+from .forms import AddPostForm
 
 from .models import Players, Category
 
@@ -26,7 +28,18 @@ def about(request):
     return render(request, 'players/about.html', {'menu': menu, 'title': 'Biz haqimizda'})
     
 def addpage(request): 
-    return HttpResponse("Post qo`shish")
+    if request.method == 'POST':
+        form = AddPostForm(request.POST)
+        if form.is_valid():
+            #print(form.cleaned_data)
+            try:
+                Players.objects.create(**form.cleaned_data)
+                return redirect('home')
+            except:
+                form.add_error(None, 'Error')
+    else:
+        form = AddPostForm()
+    return render(request, 'players/addpage.html', {'form': form,'menu': menu, 'title': 'Futbolchi qo`shish'})
 
 def contact(request): 
     return HttpResponse("Bog`lanish")
@@ -37,8 +50,17 @@ def login(request):
 def pageNotFound(request, exception):
     return HttpResponse('<h1>Afsus sahifa topilmadi. </h1>')
 
-def show_post(request, post_id):
-    return HttpResponse(f"Id: {post_id}")
+def show_post(request, post_slug):
+    post = get_object_or_404(Players, pk=post_slug)
+
+    context = {
+        'post': post, 
+        'menu': menu,
+        'title': post.title,
+        'cat_selected': post.cat_id,
+    }
+
+    return render(request, 'players/post.html', context=context) 
 
 def show_category(request, cat_id):
     posts = Players.objects.filter(cat_id=cat_id) 
