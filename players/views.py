@@ -5,7 +5,7 @@ from django.http import Http404, HttpResponse
 from .models import Players, Category
 
 menu = [{'title': 'Biz haqimizda', 'url_name': 'about'},
-        {'title': 'Post qo`shish', 'url_name': 'add_page'},
+        {'title': 'Futbolchi qo`shish', 'url_name': 'add_page'},
         {'title': 'Bog`lanish', 'url_name': 'contact'},
         {'title': 'Chiqish', 'url_name': 'login'},
 ]

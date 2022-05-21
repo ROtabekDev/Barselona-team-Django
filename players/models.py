@@ -1,15 +1,15 @@
-from tkinter import CASCADE
+
 from django.db import models
 from django.urls import reverse
 
 class Players(models.Model):
-    title = models.CharField(max_length=255)
-    content = models.TextField(blank=True)
-    photo = models.ImageField(upload_to="photos/%Y/%m/%d/")
-    time_create = models.DateTimeField(auto_now_add=True)
-    time_update = models.DateTimeField(auto_now=True)
-    is_published = models.BooleanField(default=True)
-    cat = models.ForeignKey("Category", on_delete=models.PROTECT, null=True)
+    title = models.CharField(max_length=255, verbose_name='FISH')
+    content = models.TextField(blank=True, verbose_name='Biografiya')
+    photo = models.ImageField(upload_to="photos/%Y/%m/%d/", verbose_name='Rasm')
+    time_create = models.DateTimeField(auto_now_add=True, verbose_name='Yaratilgan vaqti')
+    time_update = models.DateTimeField(auto_now=True, verbose_name='O`zgartirilgan vaqti')
+    is_published = models.BooleanField(default=True, verbose_name='Chop etilgan')
+    cat = models.ForeignKey("Category", on_delete=models.PROTECT, null=True, verbose_name='Kategoriya')
 
     def __str__(self):
         return self.title
@@ -17,11 +17,19 @@ class Players(models.Model):
     def get_absolute_url(self):
         return reverse('post', kwargs={'post_id': self.pk})
 
+    class Meta:
+        verbose_name = 'Futbolchi'
+        verbose_name_plural = 'Futbolchilar'
+
 class Category(models.Model):
     name = models.CharField(max_length=100, db_index=True)
 
     def __str__(self):
-        return self.title
+        return self.name
 
     def get_absolute_url(self):
         return reverse('category', kwargs={'cat_id': self.pk})
+
+    class Meta:
+        verbose_name = 'Pozitsiya'
+        verbose_name_plural = 'Pozitsiyalar'
