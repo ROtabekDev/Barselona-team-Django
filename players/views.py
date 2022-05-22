@@ -29,14 +29,11 @@ def about(request):
     
 def addpage(request): 
     if request.method == 'POST':
-        form = AddPostForm(request.POST)
+        form = AddPostForm(request.POST, request.FILES)
         if form.is_valid():
             #print(form.cleaned_data)
-            try:
-                Players.objects.create(**form.cleaned_data)
-                return redirect('home')
-            except:
-                form.add_error(None, 'Error')
+            form.save()
+            return redirect('home') 
     else:
         form = AddPostForm()
     return render(request, 'players/addpage.html', {'form': form,'menu': menu, 'title': 'Futbolchi qo`shish'})
@@ -51,7 +48,7 @@ def pageNotFound(request, exception):
     return HttpResponse('<h1>Afsus sahifa topilmadi. </h1>')
 
 def show_post(request, post_slug):
-    post = get_object_or_404(Players, pk=post_slug)
+    post = get_object_or_404(Players, slug=post_slug)
 
     context = {
         'post': post, 
