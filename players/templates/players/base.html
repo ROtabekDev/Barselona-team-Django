@@ -43,7 +43,15 @@
 	{% endif %}
 	
 
-	{% show_categories %}
+	{% for c in cats %}
+		{% if c.players__count > 0 %}
+			{% if c.pk == cat_selected %}
+			<li class="selected">{{c.name}}</li>
+			{% else %}
+			<li><a href="{{ c.get_absolute_url }}">{{ c.name }}</a></li> 
+			{% endif %}
+		{% endif %}
+	{% endfor %}
 			
 
 		<li class="share">

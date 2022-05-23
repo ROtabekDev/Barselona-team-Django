@@ -3,28 +3,24 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.http import Http404, HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import AddPostForm
 from .models import Players, Category
-
-menu = [{'title': 'Biz haqimizda', 'url_name': 'about'},
-        {'title': 'Futbolchi qo`shish', 'url_name': 'add_page'},
-        {'title': 'Bog`lanish', 'url_name': 'contact'},
-        {'title': 'Chiqish', 'url_name': 'login'},
-]
+from .utils import menu, DataMixin
 
 
-class PlayersHome(ListView):
+
+
+class PlayersHome(DataMixin, ListView):
     model = Players
     template_name = 'players/index.html'
     context_object_name = 'posts' 
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['menu'] = menu
-        context['title'] = 'Asosiy sahifa'
-        context['cat_selected'] = 0
-        return context
+        context = super().get_context_data(**kwargs) 
+        c_def = self.get_user_context(title='Asosiy sahifa')
+        return dict(list(context.items()) + list(c_def.items()))
 
     def get_queryset(self):
         return Players.objects.filter(is_published=True)
@@ -45,16 +41,17 @@ def about(request):
     return render(request, 'players/about.html', {'menu': menu, 'title': 'Biz haqimizda'})
     
 
-class AddPage(CreateView):
+class AddPage(LoginRequiredMixin, DataMixin, CreateView):
     form_class = AddPostForm
     template_name: str = 'players/addpage.html'
     success_url = reverse_lazy('home')
+    login_url = reverse_lazy('home')
+    raise_exception = True
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Futbolchi qo`shish'
-        context['menu'] = menu 
-        return context
+        context = super().get_context_data(**kwargs) 
+        c_def = self.get_user_context(title= 'Futbolchi qo`shish')
+        return dict(list(context.items()) + list(c_def.items()))
 
 # def addpage(request): 
 #     if request.method == 'POST':
@@ -77,7 +74,7 @@ def pageNotFound(request, exception):
     return HttpResponse('<h1>Afsus sahifa topilmadi. </h1>')
 
 
-class ShowPost(DetailView):
+class ShowPost(DataMixin, DetailView):
     model = Players
     template_name: str = 'players/post.html'
     slug_url_kwarg: str = 'post_slug'
@@ -85,10 +82,9 @@ class ShowPost(DetailView):
 
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = context['post']
-        context['menu'] = menu 
-        return context
+        context = super().get_context_data(**kwargs) 
+        c_def = self.get_user_context(title=context['post'])
+        return dict(list(context.items()) + list(c_def.items()))
 
 
 # def show_post(request, post_slug):
@@ -103,7 +99,7 @@ class ShowPost(DetailView):
 
 #     return render(request, 'players/post.html', context=context) 
 
-class PlayersCategory(ListView):
+class PlayersCategory(DataMixin, ListView):
     model = Players
     template_name = 'players/index.html'
     context_object_name = 'posts'
@@ -114,11 +110,10 @@ class PlayersCategory(ListView):
 
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Kategoriya - ' + str(context['posts'][0].cat)
-        context['menu'] = menu
+        context = super().get_context_data(**kwargs) 
         context['cat_selected'] = context['posts'][0].cat_id
-        return context
+        c_def = self.get_user_context(title='Kategoriya - ' + str(context['posts'][0].cat), cat_selected = context['posts'][0].cat_id)
+        return dict(list(context.items()) + list(c_def.items()))
 
 # def show_category(request, cat_id):
 #     posts = Players.objects.filter(cat_id=cat_id) 
