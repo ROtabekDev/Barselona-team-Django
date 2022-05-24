@@ -18,15 +18,16 @@
             <div class="header">
                 <ul id="mainmenu" class="mainmenu">
                 <li class="logo"><a href="{% url 'home' %}"><div class="logo"></div></a></li>
-                {% for m in menu %}
-                    {% if not forloop.last %}
-                            <li><a href="{% url m.url_name %}">{{m.title}}</a></li>
-                    {% else %}
-                            <li class="last"><a href="{% url m.url_name %}">{{m.title}}</a></li>
-                    {% endif %}
+                {% for m in menu %} 
+                    <li><a href="{% url m.url_name %}">{{m.title}}</a></li> 
                 {% endfor %}
+
+				{% if request.user.is_authenticated %}
+				<li class="last">{{ user.username }} | <a href="{% url 'logout' %}">Chiqish</a></li>
+				{% else %}
 				<li class="last"><a href="{% url 'register' %}">Ro`yhatdan o`tish</a> | <a href="{% url 'login' %}">Kirish</a></li>
-                </ul> 
+				{% endif %}
+			</ul> 
                 <div class="clear"></div>
 		    </div>
     {% endblock mainmenu %}

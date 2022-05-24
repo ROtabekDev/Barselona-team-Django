@@ -1,13 +1,15 @@
 
-from django.shortcuts import get_object_or_404, render, redirect
-from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import get_object_or_404, render, redirect 
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import logout, login
+from django.contrib.auth.views import LoginView
 from django.http import Http404, HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .forms import AddPostForm, RegisterUserForm
-from .models import Players, Category
+from .forms import AddPostForm, LoginUserForm, RegisterUserForm
+from .models import *
 from .utils import menu, DataMixin
 from django.core.paginator import Paginator
 
@@ -73,8 +75,8 @@ class AddPage(LoginRequiredMixin, DataMixin, CreateView):
 def contact(request): 
     return HttpResponse("Bog`lanish")
 
-def login(request): 
-    return HttpResponse("Avtorizatsiya")
+# def login(request): 
+#     return HttpResponse("Avtorizatsiya")
 
 def pageNotFound(request, exception):
     return HttpResponse('<h1>Afsus sahifa topilmadi. </h1>')
@@ -146,3 +148,25 @@ class RegisterUser(DataMixin, CreateView):
         context = super().get_context_data(**kwargs)  
         c_def = self.get_user_context(title='Registratsiya')
         return dict(list(context.items()) + list(c_def.items()))
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('home')
+class LoginUser(DataMixin, CreateView):
+    form_class = LoginUserForm
+    template_name = 'players/login.html' 
+
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)  
+        c_def = self.get_user_context(title='Avtorizatsiya')
+        return dict(list(context.items()) + list(c_def.items()))
+
+    def get_success_url(self):
+        return reverse_lazy('home')
+
+
+def logout_user(request):
+    logout(request)
+    return redirect('login')
