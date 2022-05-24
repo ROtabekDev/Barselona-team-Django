@@ -25,7 +25,8 @@
                             <li class="last"><a href="{% url m.url_name %}">{{m.title}}</a></li>
                     {% endif %}
                 {% endfor %}
-                </ul>
+				<li class="last"><a href="{% url 'register' %}">Ro`yhatdan o`tish</a> | <a href="{% url 'login' %}">Kirish</a></li>
+                </ul> 
                 <div class="clear"></div>
 		    </div>
     {% endblock mainmenu %}

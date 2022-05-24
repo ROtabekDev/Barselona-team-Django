@@ -5,8 +5,8 @@ from django.db.models import Count
 
 menu = [{'title': 'Biz haqimizda', 'url_name': 'about'},
         {'title': 'Futbolchi qo`shish', 'url_name': 'add_page'},
-        {'title': 'Bog`lanish', 'url_name': 'contact'},
-        {'title': 'Chiqish', 'url_name': 'login'},
+        {'title': 'Bog`lanish', 'url_name': 'contact'}, 
+        
 ]
 
 class DataMixin:
