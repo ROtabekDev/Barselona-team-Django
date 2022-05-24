@@ -8,7 +8,9 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<link rel="shortcut icon" href="{% static 'players/images/main.ico' %}" type="image/x-icon"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
 </head>
+
 <body>
 <table class="table-page" border=0 cellpadding="0" cellspacing="0">
 <tr><td valign=top>
@@ -68,7 +70,34 @@
 <!-- Блок контента -->
 	<div class="content-text">
         {% block content %}
-        {% endblock %}
+        {% endblock %} 
+		{% if page_obj.has_other_pages %}
+		<nav class="list-pages">
+			<ul>
+				{% if page_obj.has_previous %}
+					<li class="page-num">
+						<a href="?page={{ page_obj.previous_page_number }}">&lt;</a>
+					</li>
+				{% endif %}
+
+				{% for p in paginator.page_range %}
+				{% if page_obj.number == p%}
+				<li class="page-num page-num-selected">{{ p }}</li>
+				{% else %}
+				<li class="page-num">
+					<a href="?page={{ p }}">{{ p }}</a>
+				</li>
+				{% endif %}
+				{% endfor %}
+
+				{% if page_obj.has_next %}
+					<li class="page-num">
+						<a href="?page={{ page_obj.next_page_number }}">&gt;</a>
+					</li>
+				{% endif %}
+			</ul>
+		</nav>
+		{% endif %}
 	</div>
 <!-- Конец блока контента -->
 

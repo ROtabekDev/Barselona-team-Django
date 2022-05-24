@@ -21,6 +21,7 @@ class Players(models.Model):
     class Meta:
         verbose_name = 'Futbolchi'
         verbose_name_plural = 'Futbolchilar'
+        ordering = ['id']
 
 class Category(models.Model):
     name = models.CharField(max_length=100, db_index=True)
@@ -34,4 +35,4 @@ class Category(models.Model):
 
     class Meta:
         verbose_name = 'Pozitsiya'
-        verbose_name_plural = 'Pozitsiyalar'
+        verbose_name_plural = 'Pozitsiyalar' 

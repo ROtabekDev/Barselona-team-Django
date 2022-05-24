@@ -8,11 +8,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import AddPostForm
 from .models import Players, Category
 from .utils import menu, DataMixin
+from django.core.paginator import Paginator
 
 
 
-
-class PlayersHome(DataMixin, ListView):
+class PlayersHome(DataMixin, ListView): 
     model = Players
     template_name = 'players/index.html'
     context_object_name = 'posts' 
@@ -38,6 +38,11 @@ class PlayersHome(DataMixin, ListView):
 #     return render(request, 'players/index.html', context=context)
 
 def about(request):
+    contect_list = Players.objects.all()
+    paginator = Paginator(contect_list, 3)
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     return render(request, 'players/about.html', {'menu': menu, 'title': 'Biz haqimizda'})
     
 
@@ -99,7 +104,7 @@ class ShowPost(DataMixin, DetailView):
 
 #     return render(request, 'players/post.html', context=context) 
 
-class PlayersCategory(DataMixin, ListView):
+class PlayersCategory(DataMixin, ListView): 
     model = Players
     template_name = 'players/index.html'
     context_object_name = 'posts'
